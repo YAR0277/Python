@@ -17,7 +17,7 @@ with open(tickers_file_path, "r") as file:
     tickers = [line.strip() for line in file if line.strip()]
 
 # download tickers to data folder
-data_folder = base_path.parent.parent / "data" / "finance" / "etf"
+data_folder = base_path.parent.parent / "data" / "finance" / "intraday"
 for ticker in tickers:
     data = yf.download(ticker,period="1d",interval="5m")
 
