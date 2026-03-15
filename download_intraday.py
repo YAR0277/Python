@@ -19,7 +19,7 @@ with open(tickers_file_path, "r") as file:
 # download tickers to data folder
 data_folder = base_path.parent.parent / "data" / "finance" / "intraday"
 for ticker in tickers:
-    data = yf.download(ticker,period="1d",interval="5m")
+    data = yf.download(ticker,period="1d",interval="1m")
 
     data = data.tz_convert("America/New_York")
     data.index = data.index.tz_localize(None)
