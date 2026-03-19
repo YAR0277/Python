@@ -27,7 +27,11 @@ for ticker in tickers:
     if hasattr(data.columns, "levels"):
         data.columns = data.columns.get_level_values(0)
 
-    filename = ticker + "-i.csv"
+    # so that indices like ^DJI and ^GSPC can be included in Intraday.txt
+    if ticker.startswith("^"):
+        filename = ticker[1:] + "-i.csv"
+    else:
+        filename = ticker + "-i.csv"
     filepath = data_folder / filename
     data.to_csv(filepath)
 
