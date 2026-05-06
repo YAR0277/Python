@@ -30,7 +30,11 @@ for ticker in tickers:
     # keep only premarket
     premarket = data.between_time("04:00", "09:30")
 
-    filename = ticker + "-i.csv"
+    # so that indices like ^DJI and ^GSPC can be included in Intraday.txt
+    if ticker.startswith("^"):
+        filename = ticker[1:] + "-i.csv"
+    else:
+        filename = ticker + "-i.csv"
     filepath = data_folder / filename
     premarket.to_csv(filepath)
 
