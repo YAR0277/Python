@@ -1,7 +1,11 @@
 import yfinance as yf
 import pandas as pd
+import time
 from pathlib import Path
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+timestamp = datetime.now(ZoneInfo("America/New_York")).strftime("%Y-%m-%d %H:%M:%S")
 
 # script directory ... Project/Python
 base_path = Path(__file__).resolve().parent
@@ -30,13 +34,19 @@ for ticker in tickers:
     info = obj.info
 
     row = {}
+
+    # timestamp first
+    row["last_updated"] = timestamp
+
+    # then fundamentals
     for field in fields:
         row[field] = info.get(field)
 
-    rows.append(row)
+    df = pd.DataFrame([row])
 
-df = pd.DataFrame(rows)
+    filename = ticker + ".csv"
+    filepath = data_folder / filename
+    df.to_csv(filepath, mode="a", index=False, header=not filepath.exists())
 
-filename = "fundamentals.csv"
-filepath = data_folder / filename
-df.to_csv(filepath, index=False)
+    # give server more time to process requests
+    time.sleep(1)
