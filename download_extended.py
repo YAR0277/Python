@@ -29,7 +29,7 @@ with open(tickers_file_path, "r") as file:
 # download tickers to data folder
 data_folder = base_path.parent.parent / "data" / "finance" / "extended"
 for ticker in tickers:
-    data = yf.download(ticker,start=start,end=end,interval="5m",prepost=True,auto_adjust=False,progress=False)
+    data = yf.download(ticker,start=start,end=end,interval="5m",prepost=True,auto_adjust=False)
 
     # get a list of trading dates
     tradingDates = sorted(pd.unique(data.index.date))
