@@ -19,7 +19,7 @@ with open(tickers_file_path, "r") as file:
 # download tickers to data folder
 data_folder = base_path.parent.parent / "data" / "finance" / "intraday"
 for ticker in tickers:
-    data = yf.download(ticker,period="1d",interval="5m",prepost=True)
+    data = yf.download(ticker,period="1d",interval="5m",prepost=True,progress=False)
 
     data = data.tz_convert("America/New_York")
     data.index = data.index.tz_localize(None)
@@ -33,8 +33,10 @@ for ticker in tickers:
     # so that indices like ^DJI and ^GSPC can be included in Intraday.txt
     if ticker.startswith("^"):
         filename = ticker[1:] + "-i.csv"
+        print(f"{ticker[1:]}")
     else:
         filename = ticker + "-i.csv"
+        print(f"{ticker}")
     filepath = data_folder / filename
     premarket.to_csv(filepath)
 

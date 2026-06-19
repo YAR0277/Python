@@ -19,7 +19,7 @@ with open(tickers_file_path, "r") as file:
 # download tickers to data folder
 data_folder = base_path.parent.parent / "data" / "finance" / "etf"
 for ticker in tickers:
-    data = yf.download(ticker,period="2y",interval="1wk")
+    data = yf.download(ticker,period="2y",interval="1wk",progress=False)
 
     if hasattr(data.columns, "levels"):
         data.columns = data.columns.get_level_values(0)
@@ -27,6 +27,8 @@ for ticker in tickers:
     filename = ticker + "-w.csv"
     filepath = data_folder / filename
     data.to_csv(filepath)
+
+    print(f"{ticker}")
 
     # give server more time to process requests
     time.sleep(2)
