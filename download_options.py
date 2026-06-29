@@ -14,7 +14,7 @@ base_path = Path(__file__).resolve().parent
 data_folder = base_path.parent.parent / "data" / "finance" / "options"
 data_folder.mkdir(parents=True, exist_ok=True)
 
-# Equity.txt file path
+# ticker file paths
 equity_file_path = base_path.parent / "Batch" / "Equity.txt"
 etf_file_path = base_path.parent / "Batch" / "ETF.txt"
 

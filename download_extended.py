@@ -19,39 +19,62 @@ start = end - timedelta(days=calendarDays)
 # script directory ... Project/Python
 base_path = Path(__file__).resolve().parent
 
-# ETF.txt file path
-tickers_file_path = base_path.parent / "Batch" / "Extended.txt"
-
-# ingest tickers from file
-with open(tickers_file_path, "r") as file:
-    tickers = [line.strip() for line in file if line.strip()]
-
 # download tickers to data folder
 data_folder = base_path.parent.parent / "data" / "finance" / "extended"
-for ticker in tickers:
-    data = yf.download(ticker,start=start,end=end,interval="5m",prepost=True,auto_adjust=False,progress=False)
+data_folder.mkdir(parents=True, exist_ok=True)
 
-    # get a list of trading dates
-    tradingDates = sorted(pd.unique(data.index.date))
+# ticker file paths
+equity_file_path = base_path.parent / "Batch" / "Equity.txt"
+etf_file_path = base_path.parent / "Batch" / "ETF.txt"
 
-    # keep only last numDays trading dates
-    lastDates = tradingDates[-numDays:]
+for tickers_file_path in [equity_file_path, etf_file_path]:
 
-    # filter data on lastDates
-    mask = pd.Index(data.index.date).isin(lastDates)
-    data = data[mask]
+    if not tickers_file_path.exists():
+        print(f"Missing file: {tickers_file_path}")
+        continue
 
-    data = data.tz_convert("America/New_York")
-    data.index = data.index.tz_localize(None)
+    # ingest tickers from file
+    with open(tickers_file_path, "r") as file:
+        tickers = [line.strip() for line in file if line.strip()]
 
-    if hasattr(data.columns, "levels"):
-        data.columns = data.columns.get_level_values(0)
+    for ticker in tickers:
 
-    filename = ticker + "-e.csv"
-    filepath = data_folder / filename
-    data.to_csv(filepath)
+        try:
 
-    print(f"{ticker}")
+            data = yf.download(
+                ticker,
+                start=start,
+                end=end,
+                interval="5m",
+                prepost=True,
+                auto_adjust=False,
+                progress=False
+            )
 
-    # give server more time to process requests
-    time.sleep(2)
+            # get a list of trading dates
+            tradingDates = sorted(pd.unique(data.index.date))
+
+            # keep only last numDays trading dates
+            lastDates = tradingDates[-numDays:]
+
+            # filter data on lastDates
+            mask = pd.Index(data.index.date).isin(lastDates)
+            data = data[mask]
+
+            data = data.tz_convert("America/New_York")
+            data.index = data.index.tz_localize(None)
+
+            if hasattr(data.columns, "levels"):
+                data.columns = data.columns.get_level_values(0)
+
+            filename = ticker + "-e.csv"
+            filepath = data_folder / filename
+            data.to_csv(filepath)
+
+            print(f"{ticker}")
+
+        except Exception as e:
+            print(f"{ticker}: {e}")
+
+        # give server more time to process requests
+        time.sleep(2)
