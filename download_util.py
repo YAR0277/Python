@@ -81,3 +81,6 @@ def process_premarket(data):
 
 def intraday_filename(ticker):
     return f"{ticker.lstrip('^')}-i.csv"
+
+def weekly_filename(ticker):
+    return f"{ticker.lstrip('^')}-w.csv"

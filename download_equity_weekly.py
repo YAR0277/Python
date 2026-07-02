@@ -1,34 +1,16 @@
-import yfinance as yf
-import pandas as pd
-import time
 from pathlib import Path
-from datetime import datetime
-
-today = datetime.now().strftime("%Y-%m-%d")
+from download_util import download_list
+from download_util import weekly_filename
 
 # script directory ... Project/Python
 base_path = Path(__file__).resolve().parent
 
-# Equity.txt file path
-tickers_file_path = base_path.parent / "Batch" / "Equity.txt"
-
-# ingest tickers from file
-with open(tickers_file_path, "r") as file:
-    tickers = [line.strip() for line in file if line.strip()]
-
-# download tickers to data folder
-data_folder = base_path.parent.parent / "data" / "finance" / "equity"
-for ticker in tickers:
-    data = yf.download(ticker,period="2y",interval="1wk",progress=False)
-
-    if hasattr(data.columns, "levels"):
-        data.columns = data.columns.get_level_values(0)
-
-    filename = ticker + "-w.csv"
-    filepath = data_folder / filename
-    data.to_csv(filepath)
-
-    print(f"{ticker}")
-
-    # give server more time to process requests
-    time.sleep(2)
+download_list(
+    ticker_files=[
+        base_path.parent / "Batch" / "Equity.txt"
+        ], 
+    output_folder=base_path.parent.parent / "data" / "finance" / "equity",
+    filename_func = weekly_filename,
+    period="2y",
+    interval="1wk",
+)
