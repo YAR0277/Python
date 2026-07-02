@@ -27,6 +27,8 @@ def download_list(
             print(f"Missing file: {ticker_file}")
             return
 
+        print(f"\nDownload {ticker_file.stem} ...")
+        
         with open(ticker_file) as f:
             tickers = [line.strip() for line in f if line.strip()]
 

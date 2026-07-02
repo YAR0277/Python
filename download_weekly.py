@@ -14,3 +14,23 @@ download_list(
     period="2y",
     interval="1wk",
 )
+
+download_list(
+    ticker_files=[
+        base_path.parent / "Batch" / "ETF.txt"
+        ], 
+    output_folder=base_path.parent.parent / "data" / "finance" / "etf",
+    filename_func = weekly_filename,
+    period="2y",
+    interval="1wk",
+)
+
+download_list(
+    ticker_files=[
+        base_path.parent / "Batch" / "Index.txt"
+        ], 
+    output_folder=base_path.parent.parent / "data" / "finance" / "index",
+    filename_func = weekly_filename,
+    period="2y",
+    interval="1wk",
+)
