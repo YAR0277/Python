@@ -77,4 +77,4 @@ for tickers_file_path in [equity_file_path, etf_file_path]:
             print(f"{ticker}: {e}")
 
         # give server more time to process requests
-        time.sleep(2)
+        time.sleep(0.5)
